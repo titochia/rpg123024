@@ -30,10 +30,14 @@ public class GameSession {
     private GamePhase phase;
 
     public GameSession(Hero hero, Dungeon dungeon, MonsterAI monsterAI) {
+        this(hero, dungeon, monsterAI, Objects.requireNonNull(dungeon, "dungeon").start());
+    }
+
+    public GameSession(Hero hero, Dungeon dungeon, MonsterAI monsterAI, Position position) {
         this.hero = Objects.requireNonNull(hero, "hero");
         this.dungeon = Objects.requireNonNull(dungeon, "dungeon");
         this.monsterAI = Objects.requireNonNull(monsterAI, "monsterAI");
-        this.position = dungeon.start();
+        this.position = Objects.requireNonNull(position, "position");
         this.phase = ExploringPhase.INSTANCE;
         currentRoom().markVisited();
     }

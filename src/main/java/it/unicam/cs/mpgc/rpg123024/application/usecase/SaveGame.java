@@ -22,6 +22,10 @@ public class SaveGame {
     }
 
     public void execute(GameSession session) {
-        repository.save(Objects.requireNonNull(session, "session"));
+        Objects.requireNonNull(session, "session");
+        if (!session.phase().allowsSaving()) {
+            throw new IllegalStateException("saving not allowed in phase " + session.phase().id());
+        }
+        repository.save(session);
     }
 }

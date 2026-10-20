@@ -36,4 +36,8 @@ public interface GamePhase {
     private IllegalStateException notAllowed(String operation) {
         return new IllegalStateException(operation + " not allowed in phase " + id());
     }
+
+    default boolean allowsSaving() {
+        return false;
+    }
 }

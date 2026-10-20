@@ -37,6 +37,11 @@ public final class ExploringPhase implements GamePhase {
     }
 
     @Override
+    public boolean allowsSaving() {
+        return true;
+    }
+
+    @Override
     public GamePhase move(GameSession session, Direction direction, EventPublisher events) {
         Position target = session.position().move(direction);
         if (!session.dungeon().contains(target)) {

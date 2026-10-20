@@ -4,10 +4,12 @@ import java.util.Objects;
 
 /**
  * Personaggio controllato dal giocatore.
+ *
  * <p>
  * <b>Responsabilità:</b> estendere {@link AbstractCombatant} con progressione (livello ed
  * esperienza) e possesso di un {@link Inventory}, consentendo l'uso di oggetti. Non gestisce
  * input, rendering né persistenza.
+ *
  * <p>
  * <b>Architettura:</b> entità centrale del Domain, manipolata dagli use case del layer
  * Application. Le regole numeriche di avanzamento sono costanti locali, isolate in un unico punto.
@@ -40,6 +42,17 @@ public class Hero extends AbstractCombatant {
     public Hero(String name, Stats baseStats, int inventoryCapacity) {
         super(name, baseStats);
         this.inventory = new Inventory(inventoryCapacity);
+    }
+
+    public Hero(String name, Stats baseStats, int inventoryCapacity,
+                int level, int experience, int currentHealth) {
+        super(name, baseStats, currentHealth);
+        if (level < 1 || experience < 0) {
+            throw new IllegalArgumentException("invalid level or experience");
+        }
+        this.inventory = new Inventory(inventoryCapacity);
+        this.level = level;
+        this.experience = experience;
     }
 
     /** @return livello corrente (parte da 1) */

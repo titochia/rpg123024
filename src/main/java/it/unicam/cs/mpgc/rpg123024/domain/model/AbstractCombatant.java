@@ -4,10 +4,12 @@ import java.util.Objects;
 
 /**
  * Implementazione base di {@link Combatant} che gestisce nome, statistiche base e salute.
+ *
  * <p>
  * <b>Responsabilità:</b> centralizzare la logica comune di danno e cura (clamping dei valori)
  * ed evitare duplicazioni tra {@link Hero} e {@link Monster} (DRY). Non aggiunge comportamenti
  * specifici di una categoria di entità.
+ *
  * <p>
  * <b>Architettura:</b> classe di supporto del Domain, non esposta oltre il package model
  * se non tramite le sue sottoclassi.
@@ -23,13 +25,20 @@ public abstract class AbstractCombatant implements Combatant {
      * @param baseStats statistiche iniziali; la salute parte dal massimo
      */
     protected AbstractCombatant(String name, Stats baseStats) {
+        this(name, baseStats, Objects.requireNonNull(baseStats, "baseStats").maxHealth());
+    }
+
+    protected AbstractCombatant(String name, Stats baseStats, int currentHealth) {
         Objects.requireNonNull(name, "name");
         if (name.isBlank()) {
             throw new IllegalArgumentException("name must not be blank");
         }
         this.name = name;
         this.baseStats = Objects.requireNonNull(baseStats, "baseStats");
-        this.currentHealth = baseStats.maxHealth();
+        if (currentHealth < 0 || currentHealth > baseStats.maxHealth()) {
+            throw new IllegalArgumentException("currentHealth out of range");
+        }
+        this.currentHealth = currentHealth;
     }
 
     @Override
