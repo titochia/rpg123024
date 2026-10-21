@@ -1,0 +1,145 @@
+.root {
+    -fx-font-family: "Segoe UI", "Helvetica", sans-serif;
+    -fx-font-size: 14px;
+    -fx-base: #2b2d33;
+    -fx-background: #1d1f24;
+    -fx-text-fill: #e6e1d6;
+    -fx-accent: #c9a227;
+    -fx-focus-color: #c9a227;
+}
+
+.screen {
+    -fx-padding: 20;
+    -fx-background-color: #1d1f24;
+}
+
+.label {
+    -fx-text-fill: #e6e1d6;
+}
+
+.title {
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #c9a227;
+}
+
+.subtitle {
+    -fx-text-fill: #9a958a;
+}
+
+.heading {
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
+}
+
+.panel {
+    -fx-background-color: #262931;
+    -fx-background-radius: 8;
+    -fx-padding: 14;
+}
+
+.panel.enemy {
+    -fx-border-color: #7a2e2e;
+    -fx-border-radius: 8;
+}
+
+.button {
+    -fx-background-color: #3a3e48;
+    -fx-text-fill: #e6e1d6;
+    -fx-background-radius: 6;
+    -fx-padding: 7 16;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: #4a4f5c;
+}
+
+.button.action {
+    -fx-background-color: #6b4f16;
+}
+
+.button.action:hover {
+    -fx-background-color: #8a6a22;
+}
+
+.text-field {
+    -fx-background-color: #262931;
+    -fx-text-fill: #e6e1d6;
+    -fx-prompt-text-fill: #77736b;
+    -fx-background-radius: 6;
+}
+
+.status {
+    -fx-padding: 0 0 10 0;
+}
+
+.status.error {
+    -fx-text-fill: #e06c6c;
+}
+
+.status.info {
+    -fx-text-fill: #8fc98f;
+}
+
+.health-bar .bar {
+    -fx-background-color: #b83b3b;
+    -fx-background-insets: 0;
+    -fx-background-radius: 4;
+}
+
+.health-bar .track {
+    -fx-background-color: #3a2a2a;
+    -fx-background-radius: 4;
+}
+
+.effects {
+    -fx-text-fill: #8fb3d9;
+    -fx-font-style: italic;
+}
+
+.log, .log .list-cell {
+    -fx-background-color: #23252b;
+    -fx-text-fill: #cfc9bc;
+}
+
+.log .list-cell:selected {
+    -fx-background-color: #4a4f5c;
+}
+
+.tile {
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-border-width: 2;
+    -fx-border-color: transparent;
+}
+
+.tile-unknown {
+    -fx-background-color: #2a2c31;
+}
+
+.tile-visited {
+    -fx-background-color: #4a4537;
+}
+
+.tile-exit {
+    -fx-border-color: #c9a227;
+}
+
+.tile-current {
+    -fx-background-color: #2f6b4f;
+}
+
+.tile-monster .tile-symbol {
+    -fx-text-fill: #e06c6c;
+}
+
+.tile-symbol {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.tile-exit .tile-symbol {
+    -fx-font-size: 12px;
+    -fx-text-fill: #c9a227;
+}
