@@ -18,7 +18,9 @@ import java.util.List;
  * <b>Responsabilità:</b> inoltrare le azioni al {@link CombatEngine}, pubblicare gli esiti, far
  * agire il mostro finché non torna il turno dell'eroe e concludere lo scontro (esperienza, livelli,
  * rimozione del mostro, passaggio a esplorazione, vittoria o sconfitta). Assegnare ricompense è qui
- * (non nel motore) per mantenere il motore privo di regole di progressione.
+ * (non nel motore) per mantenere il motore privo di regole di progressione. Un'azione non disponibile
+ * (ad esempio in ricarica) viene rifiutata prima di interpellare il motore, così il turno non viene
+ * consumato e gli effetti periodici non avanzano.
  * <p>
  * <b>Pattern:</b> State concreto (singleton senza stato). <b>SOLID:</b> Single Responsibility
  * (regole del flusso di combattimento); l'uso di oggetti riusa il Command esistente (DRY).
@@ -38,6 +40,9 @@ public final class CombatPhase implements GamePhase {
     @Override
     public GamePhase heroAct(GameSession session, TurnAction action, EventPublisher events) {
         CombatEngine combat = engine(session);
+        if (!action.isAvailableFor(combat.heroCombatant())) {
+            throw new IllegalStateException("This action is still recharging");
+        }
         publishAll(combat.heroAct(action), events);
         return resolve(session, events);
     }

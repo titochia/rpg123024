@@ -12,6 +12,7 @@ import it.unicam.cs.mpgc.rpg123024.domain.ability.PhysicalAttack;
 import it.unicam.cs.mpgc.rpg123024.domain.combat.AbilityAction;
 import it.unicam.cs.mpgc.rpg123024.domain.combat.AggressiveMonsterAI;
 import it.unicam.cs.mpgc.rpg123024.domain.combat.ApplyEffectAction;
+import it.unicam.cs.mpgc.rpg123024.domain.combat.CooldownAction;
 import it.unicam.cs.mpgc.rpg123024.domain.combat.MonsterAI;
 import it.unicam.cs.mpgc.rpg123024.domain.combat.Targeting;
 import it.unicam.cs.mpgc.rpg123024.domain.effect.PoisonEffect;
@@ -66,6 +67,7 @@ public class Main extends Application {
     private static final double MONSTER_PROBABILITY = 0.4;
     private static final double LOOT_PROBABILITY = 0.3;
     private static final Stats HERO_STATS = new Stats(100, 10, 3, 5);
+    private static final int HEAL_COOLDOWN_TURNS = 2;
     private static final Path SAVE_FILE = Path.of(System.getProperty("user.home"), ".rpg123024", "save.json");
 
     public static void main(String[] args) {
@@ -126,7 +128,8 @@ public class Main extends Application {
     private static List<NamedAction> heroActions() {
         return List.of(
                 new NamedAction("Attack", new AbilityAction(new PhysicalAttack(), Targeting.OPPONENT)),
-                new NamedAction("Heal", new AbilityAction(new HealAbility("Heal", 20), Targeting.SELF)),
+                new NamedAction("Heal", new CooldownAction("Heal",
+                        new AbilityAction(new HealAbility("Heal", 20), Targeting.SELF), HEAL_COOLDOWN_TURNS)),
                 new NamedAction("Shield", new ApplyEffectAction("Shield",
                         target -> new ShieldEffect(target, 4, 3), Targeting.SELF)),
                 new NamedAction("Poison", new ApplyEffectAction("Poison",
