@@ -65,6 +65,7 @@ class InventoryPresenterTest {
         assertEquals(80, hero.currentHealth());
         assertTrue(view.items.isEmpty());
         assertTrue(navigator.screens.isEmpty());
+        assertTrue(sessions.hasUnsavedChanges());
     }
 
     @Test

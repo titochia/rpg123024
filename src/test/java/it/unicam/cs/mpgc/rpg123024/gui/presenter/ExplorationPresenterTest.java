@@ -104,6 +104,22 @@ class ExplorationPresenterTest {
     }
 
     @Test
+    void moveMarksUnsavedChangesAndSaveClearsThem() {
+        presenter.onMove(Direction.SOUTH);
+        assertTrue(sessions.hasUnsavedChanges());
+
+        presenter.onSave();
+        assertFalse(sessions.hasUnsavedChanges());
+    }
+
+    @Test
+    void rejectedMoveDoesNotMarkChanges() {
+        presenter.onMove(Direction.WEST);
+
+        assertFalse(sessions.hasUnsavedChanges());
+    }
+
+    @Test
     void saveDuringCombatShowsError() {
         presenter.onMove(Direction.EAST);
 

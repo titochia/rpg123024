@@ -98,6 +98,73 @@ class MenuPresenterTest {
         presenter(Optional::empty).showOutcome(true);
 
         assertFalse(sessions.current().isPresent());
+        assertFalse(view.continueAvailable);
         assertEquals(1, view.messages.size());
+    }
+
+    @Test
+    void refreshShowsContinueOnlyWithGameInProgress() {
+        MenuPresenter presenter = presenter(Optional::empty);
+
+        presenter.refresh();
+        assertFalse(view.continueAvailable);
+
+        sessions.set(Fixtures.session(Fixtures.hero(), Fixtures.dungeon()));
+        presenter.refresh();
+        assertTrue(view.continueAvailable);
+    }
+
+    @Test
+    void continueReturnsToCurrentPhase() {
+        sessions.set(Fixtures.session(Fixtures.hero(), Fixtures.dungeon()));
+
+        presenter(Optional::empty).onContinue();
+
+        assertEquals("EXPLORATION", navigator.last());
+    }
+
+    @Test
+    void continueWithoutGameShowsError() {
+        presenter(Optional::empty).onContinue();
+
+        assertEquals(1, view.errors.size());
+        assertTrue(navigator.screens.isEmpty());
+    }
+
+    @Test
+    void newGameDoesNotAskWhenProgressIsSaved() {
+        sessions.set(Fixtures.session(Fixtures.hero(), Fixtures.dungeon()));
+
+        presenter(Optional::empty).onNewGame("Aria");
+
+        assertTrue(view.questions.isEmpty());
+        assertEquals("Aria", sessions.require().hero().name());
+    }
+
+    @Test
+    void declinedConfirmationKeepsCurrentGame() {
+        GameSession current = Fixtures.session(Fixtures.hero(), Fixtures.dungeon());
+        sessions.set(current);
+        sessions.markChanged();
+        view.confirmAnswer = false;
+
+        presenter(Optional::empty).onNewGame("Aria");
+
+        assertEquals(1, view.questions.size());
+        assertSame(current, sessions.require());
+        assertTrue(navigator.screens.isEmpty());
+    }
+
+    @Test
+    void acceptedConfirmationLoadsSavedGame() {
+        sessions.set(Fixtures.session(Fixtures.hero(), Fixtures.dungeon()));
+        sessions.markChanged();
+        GameSession saved = Fixtures.session(Fixtures.hero(), Fixtures.dungeon());
+
+        presenter(() -> Optional.of(saved)).onLoadGame();
+
+        assertEquals(1, view.questions.size());
+        assertSame(saved, sessions.require());
+        assertFalse(sessions.hasUnsavedChanges());
     }
 }

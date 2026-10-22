@@ -4,7 +4,10 @@ import it.unicam.cs.mpgc.rpg123024.application.Fixtures;
 import it.unicam.cs.mpgc.rpg123024.application.state.GameSession;
 import it.unicam.cs.mpgc.rpg123024.application.usecase.ExecuteTurn;
 import it.unicam.cs.mpgc.rpg123024.application.usecase.MoveToRoom;
+import it.unicam.cs.mpgc.rpg123024.domain.ability.HealAbility;
+import it.unicam.cs.mpgc.rpg123024.domain.combat.AbilityAction;
 import it.unicam.cs.mpgc.rpg123024.domain.combat.ApplyEffectAction;
+import it.unicam.cs.mpgc.rpg123024.domain.combat.CooldownAction;
 import it.unicam.cs.mpgc.rpg123024.domain.combat.Targeting;
 import it.unicam.cs.mpgc.rpg123024.domain.effect.ShieldEffect;
 import it.unicam.cs.mpgc.rpg123024.domain.map.Direction;
@@ -102,6 +105,36 @@ class CombatPresenterTest {
         presenter.refresh();
 
         assertEquals("EXPLORATION", navigator.last());
+    }
+
+    @Test
+    void rechargingActionIsShownAsUnavailableUntilReady() {
+        CombatPresenter withHeal = new CombatPresenter(view, new ExecuteTurn(log::accept), sessions, log, navigator,
+                List.of(new NamedAction("Attack", Fixtures.ATTACK),
+                        new NamedAction("Heal", new CooldownAction("Heal",
+                                new AbilityAction(new HealAbility("Heal", 20), Targeting.SELF), 2))));
+        enterCombatWith(Fixtures.monster(100, 1, 1, 10));
+
+        withHeal.onAction(1);
+        withHeal.refresh();
+        assertEquals(new ActionOption("Heal", false), view.actions.get(1));
+
+        withHeal.onAction(0);
+        withHeal.refresh();
+        assertEquals(new ActionOption("Heal", false), view.actions.get(1));
+
+        withHeal.onAction(0);
+        withHeal.refresh();
+        assertEquals(new ActionOption("Heal", true), view.actions.get(1));
+    }
+
+    @Test
+    void actionMarksUnsavedChanges() {
+        enterCombatWith(Fixtures.monster(100, 1, 1, 10));
+
+        presenter.onAction(0);
+
+        assertTrue(sessions.hasUnsavedChanges());
     }
 
     @Test
