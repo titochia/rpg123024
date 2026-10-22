@@ -8,7 +8,7 @@ import java.util.Objects;
  * <p>
  * <b>Responsabilità:</b> estendere {@link AbstractCombatant} con la ricompensa di esperienza
  * assegnata a chi lo sconfigge. Il comportamento in battaglia (scelta delle azioni) non è qui:
- * sarà delegato a una strategia di intelligenza artificiale separata.
+ * è delegato a una strategia separata ({@code MonsterAI}).
  *
  * <p>
  * <b>Architettura:</b> entità del Domain, istanziata dalle factory dei mostri.

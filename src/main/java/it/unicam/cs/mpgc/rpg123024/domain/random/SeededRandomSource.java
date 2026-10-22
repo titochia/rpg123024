@@ -6,8 +6,9 @@ import java.util.Random;
  * Implementazione di {@link RandomSource} basata su {@link Random} con seed esplicito.
  * <p>
  * <b>Responsabilità:</b> produrre sequenze riproducibili a partire da un seed, requisito per
- * test deterministici e per rigenerare lo stesso dungeon (utile anche per la persistenza:
- * basta salvare il seed).
+ * test deterministici e per rigenerare lo stesso dungeon (proprietà di sistema {@code rpg.seed}).
+ * Il salvataggio non usa il seed: persiste lo stato completo, perché le stanze cambiano durante il
+ * gioco.
  * <p>
  * <b>SOLID:</b> Single Responsibility (solo adattamento di {@code Random}); sostituibile
  * con altre implementazioni (Liskov, Dependency Inversion).

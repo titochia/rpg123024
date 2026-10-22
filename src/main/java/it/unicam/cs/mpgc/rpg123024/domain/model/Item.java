@@ -10,7 +10,7 @@ import java.util.Objects;
  * nuovo effetto, senza modificare questa classe (Open/Closed).
  * <p>
  * <b>Architettura:</b> l'{@code id} è l'unico dato da persistere: in fase di caricamento
- * l'oggetto viene ricostruito da una factory, evitando di serializzare comportamento.
+ * l'oggetto viene ricostruito da un {@code ItemCatalog}, evitando di serializzare comportamento.
  *
  * @param id          identificativo univoco e stabile del tipo di oggetto
  * @param name        nome visualizzabile

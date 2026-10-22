@@ -11,11 +11,12 @@ import it.unicam.cs.mpgc.rpg123024.domain.model.Item;
  * <p>
  * <b>Responsabilità:</b> definire i comandi del giocatore ({@code move}, {@code heroAct},
  * {@code useItem}); per default ogni comando è vietato, e ogni fase concreta abilita solo ciò che
- * le compete.
+ * le compete. {@link #allowsSaving()} indica se la partita può essere salvata (solo in
+ * esplorazione).
  * <p>
  * <b>SOLID:</b> Open/Closed (nuove fasi senza toccare use case né sessione); Liskov (fasi
  * intercambiabili); elimina {@code if/switch} sullo stato nei chiamanti. Il metodo {@link #id()} è
- * l'identificativo stabile utilizzabile dalla persistenza.
+ * l'identificativo stabile della fase, usato dalla GUI per scegliere la schermata.
  */
 public interface GamePhase {
 
