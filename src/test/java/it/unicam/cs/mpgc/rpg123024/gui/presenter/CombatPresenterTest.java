@@ -11,6 +11,7 @@ import it.unicam.cs.mpgc.rpg123024.domain.map.Direction;
 import it.unicam.cs.mpgc.rpg123024.domain.map.Dungeon;
 import it.unicam.cs.mpgc.rpg123024.domain.map.Position;
 import it.unicam.cs.mpgc.rpg123024.domain.model.Monster;
+import it.unicam.cs.mpgc.rpg123024.gui.view.ActionOption;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -49,7 +50,7 @@ class CombatPresenterTest {
 
         assertEquals("Hero", view.hero.name());
         assertEquals("Orc", view.monster.name());
-        assertEquals(List.of("Attack", "Shield"), view.actions);
+        assertEquals(List.of(new ActionOption("Attack", true), new ActionOption("Shield", true)), view.actions);
         assertTrue(view.log.contains("A Orc attacks!"));
     }
 

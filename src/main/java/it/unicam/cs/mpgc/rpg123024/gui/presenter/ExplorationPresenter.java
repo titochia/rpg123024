@@ -55,6 +55,7 @@ public class ExplorationPresenter {
     public void onMove(Direction direction) {
         GameSession session = sessions.require();
         if (SafeCommand.run(view, () -> moveToRoom.execute(session, direction))) {
+            sessions.markChanged();
             navigator.showPhase(session.phase());
         }
     }
@@ -62,6 +63,7 @@ public class ExplorationPresenter {
     public void onSave() {
         GameSession session = sessions.require();
         if (SafeCommand.run(view, () -> saveGame.execute(session))) {
+            sessions.markSaved();
             view.showMessage("Game saved");
         }
     }

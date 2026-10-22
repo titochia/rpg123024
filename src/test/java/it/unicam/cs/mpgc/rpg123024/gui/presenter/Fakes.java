@@ -1,5 +1,6 @@
 package it.unicam.cs.mpgc.rpg123024.gui.presenter;
 
+import it.unicam.cs.mpgc.rpg123024.gui.view.ActionOption;
 import it.unicam.cs.mpgc.rpg123024.gui.view.CombatView;
 import it.unicam.cs.mpgc.rpg123024.gui.view.CombatantStatus;
 import it.unicam.cs.mpgc.rpg123024.gui.view.ExplorationView;
@@ -53,6 +54,20 @@ final class Fakes {
     static class FakeMenuView implements MenuView {
         final List<String> errors = new ArrayList<>();
         final List<String> messages = new ArrayList<>();
+        final List<String> questions = new ArrayList<>();
+        boolean confirmAnswer = true;
+        boolean continueAvailable;
+
+        @Override
+        public boolean confirm(String message) {
+            questions.add(message);
+            return confirmAnswer;
+        }
+
+        @Override
+        public void setContinueAvailable(boolean available) {
+            continueAvailable = available;
+        }
 
         @Override
         public void showError(String message) {
@@ -110,7 +125,7 @@ final class Fakes {
         final List<String> errors = new ArrayList<>();
         CombatantStatus hero;
         CombatantStatus monster;
-        List<String> actions = List.of();
+        List<ActionOption> actions = List.of();
         List<String> log = List.of();
 
         @Override
@@ -125,8 +140,8 @@ final class Fakes {
         }
 
         @Override
-        public void showActions(List<String> actionNames) {
-            this.actions = actionNames;
+        public void showActions(List<ActionOption> actions) {
+            this.actions = actions;
         }
 
         @Override

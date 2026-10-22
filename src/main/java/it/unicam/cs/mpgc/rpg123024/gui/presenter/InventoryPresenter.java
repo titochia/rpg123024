@@ -57,6 +57,7 @@ public class InventoryPresenter {
         if (!done) {
             return;
         }
+        sessions.markChanged();
         if ("EXPLORING".equals(session.phase().id())) {
             refresh();
         } else {

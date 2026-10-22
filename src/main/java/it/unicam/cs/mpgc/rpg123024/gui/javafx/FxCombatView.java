@@ -1,6 +1,7 @@
 package it.unicam.cs.mpgc.rpg123024.gui.javafx;
 
 import it.unicam.cs.mpgc.rpg123024.gui.presenter.CombatPresenter;
+import it.unicam.cs.mpgc.rpg123024.gui.view.ActionOption;
 import it.unicam.cs.mpgc.rpg123024.gui.view.CombatView;
 import it.unicam.cs.mpgc.rpg123024.gui.view.CombatantStatus;
 import javafx.geometry.Pos;
@@ -22,8 +23,9 @@ import java.util.Objects;
  * Implementazione JavaFX della {@link CombatView}: pannelli dei due contendenti (salute, statistiche
  * effettive, effetti attivi), pulsanti delle azioni e registro dello scontro.
  * <p>
- * <b>Responsabilità:</b> mostrare i dati ricevuti e creare un pulsante per ogni azione disponibile,
- * comunicandone l'indice al {@link CombatPresenter}. Non conosce le azioni di dominio.
+ * <b>Responsabilità:</b> mostrare i dati ricevuti e creare un pulsante per ogni azione (disattivato
+ * se l'azione non è disponibile, ad esempio in ricarica), comunicandone l'indice al
+ * {@link CombatPresenter}. Non conosce le azioni di dominio.
  * <p>
  * <b>Pattern:</b> MVP (View passiva). <b>SOLID:</b> Single Responsibility; Open/Closed (i pulsanti
  * sono generati dall'elenco ricevuto, quindi nuove azioni non richiedono modifiche).
@@ -72,12 +74,13 @@ public class FxCombatView implements CombatView {
     }
 
     @Override
-    public void showActions(List<String> actionNames) {
+    public void showActions(List<ActionOption> options) {
         actions.getChildren().clear();
-        for (int i = 0; i < actionNames.size(); i++) {
+        for (int i = 0; i < options.size(); i++) {
             int index = i;
-            Button button = Widgets.button(actionNames.get(i), () -> presenter.onAction(index));
+            Button button = Widgets.button(options.get(i).name(), () -> presenter.onAction(index));
             button.getStyleClass().add("action");
+            button.setDisable(!options.get(i).available());
             actions.getChildren().add(button);
         }
         actions.getChildren().add(Widgets.button("Inventory", () -> presenter.onOpenInventory()));

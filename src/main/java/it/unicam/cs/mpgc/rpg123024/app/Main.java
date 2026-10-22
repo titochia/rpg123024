@@ -25,12 +25,14 @@ import it.unicam.cs.mpgc.rpg123024.domain.model.Stats;
 import it.unicam.cs.mpgc.rpg123024.domain.random.SeededRandomSource;
 import it.unicam.cs.mpgc.rpg123024.gui.event.GameEventBus;
 import it.unicam.cs.mpgc.rpg123024.gui.javafx.FxCombatView;
+import it.unicam.cs.mpgc.rpg123024.gui.javafx.FxConfirmDialog;
 import it.unicam.cs.mpgc.rpg123024.gui.javafx.FxExplorationView;
 import it.unicam.cs.mpgc.rpg123024.gui.javafx.FxInventoryView;
 import it.unicam.cs.mpgc.rpg123024.gui.javafx.FxMenuView;
 import it.unicam.cs.mpgc.rpg123024.gui.javafx.FxNavigator;
 import it.unicam.cs.mpgc.rpg123024.gui.javafx.FxNavigator.Screen;
 import it.unicam.cs.mpgc.rpg123024.gui.presenter.CombatPresenter;
+import it.unicam.cs.mpgc.rpg123024.gui.presenter.ExitPresenter;
 import it.unicam.cs.mpgc.rpg123024.gui.presenter.ExplorationPresenter;
 import it.unicam.cs.mpgc.rpg123024.gui.presenter.GameLog;
 import it.unicam.cs.mpgc.rpg123024.gui.presenter.GameSessionHolder;
@@ -111,7 +113,17 @@ public class Main extends Application {
         InventoryPresenter inventory = new InventoryPresenter(inventoryView, new UseItem(events), sessions, navigator);
         inventoryView.setPresenter(inventory);
 
-        navigator.register(Screen.MENU, menuView.root(), menuView::clearStatus);
+        ExitPresenter exit = new ExitPresenter(new FxConfirmDialog(), sessions);
+        stage.setOnCloseRequest(event -> {
+            if (!exit.onExitRequested()) {
+                event.consume();
+            }
+        });
+
+        navigator.register(Screen.MENU, menuView.root(), () -> {
+            menuView.clearStatus();
+            menu.refresh();
+        });
         navigator.register(Screen.EXPLORATION, explorationView.root(), exploration::refresh);
         navigator.register(Screen.COMBAT, combatView.root(), combat::refresh);
         navigator.register(Screen.INVENTORY, inventoryView.root(), inventory::refresh);

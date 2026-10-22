@@ -11,9 +11,10 @@ import java.util.Optional;
 /**
  * Presenter del menu principale.
  * <p>
- * <b>Responsabilità:</b> avviare una nuova partita o caricare quella salvata tramite gli use case,
- * registrarla nel {@link GameSessionHolder}, azzerare il registro e navigare alla schermata della
- * fase corrente; mostrare l'esito della partita conclusa.
+ * <b>Responsabilità:</b> avviare una nuova partita, riprendere quella in corso o caricare quella
+ * salvata tramite gli use case, registrarla nel {@link GameSessionHolder}, azzerare il registro e
+ * navigare alla schermata della fase corrente; chiedere conferma prima di sostituire una partita con
+ * progressi non salvati; mostrare l'esito della partita conclusa.
  * <p>
  * <b>Pattern:</b> MVP (Presenter). <b>SOLID:</b> Single Responsibility (logica del menu);
  * Dependency Inversion (dipende da {@link MenuView}, {@link Navigator} e use case, non da JavaFX):
@@ -38,15 +39,31 @@ public class MenuPresenter {
         this.navigator = Objects.requireNonNull(navigator, "navigator");
     }
 
+    public void refresh() {
+        view.setContinueAvailable(sessions.current().isPresent());
+    }
+
     public void onNewGame(String heroName) {
         if (heroName == null || heroName.isBlank()) {
             view.showError("Enter a name for your hero");
             return;
         }
+        if (!confirmDiscard("Start a new game anyway?")) {
+            return;
+        }
         SafeCommand.run(view, () -> begin(startNewGame.execute(heroName.strip())));
     }
 
+    public void onContinue() {
+        sessions.current().ifPresentOrElse(
+                session -> navigator.showPhase(session.phase()),
+                () -> view.showError("No game in progress"));
+    }
+
     public void onLoadGame() {
+        if (!confirmDiscard("Load the saved game anyway?")) {
+            return;
+        }
         SafeCommand.run(view, () -> {
             Optional<GameSession> loaded = loadGame.execute();
             if (loaded.isEmpty()) {
@@ -59,7 +76,13 @@ public class MenuPresenter {
 
     public void showOutcome(boolean victory) {
         sessions.clear();
+        view.setContinueAvailable(false);
         view.showMessage(victory ? "Victory! You escaped the dungeon." : "Defeat. Your hero has fallen.");
+    }
+
+    private boolean confirmDiscard(String question) {
+        return !sessions.hasUnsavedChanges()
+                || view.confirm("The current game has unsaved progress. " + question);
     }
 
     private void begin(GameSession session) {

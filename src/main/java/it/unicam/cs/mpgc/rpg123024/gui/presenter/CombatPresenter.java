@@ -3,6 +3,8 @@ package it.unicam.cs.mpgc.rpg123024.gui.presenter;
 import it.unicam.cs.mpgc.rpg123024.application.state.GameSession;
 import it.unicam.cs.mpgc.rpg123024.application.usecase.ExecuteTurn;
 import it.unicam.cs.mpgc.rpg123024.domain.combat.CombatEngine;
+import it.unicam.cs.mpgc.rpg123024.domain.model.Combatant;
+import it.unicam.cs.mpgc.rpg123024.gui.view.ActionOption;
 import it.unicam.cs.mpgc.rpg123024.gui.view.CombatView;
 
 import java.util.List;
@@ -13,7 +15,7 @@ import java.util.Optional;
  * Presenter della schermata di combattimento.
  * <p>
  * <b>Responsabilità:</b> mostrare lo stato effettivo (decorato) dei contendenti, l'elenco delle
- * azioni dell'eroe e il registro; eseguire l'azione scelta tramite {@link ExecuteTurn} e navigare
+ * azioni dell'eroe con la loro disponibilità (ad esempio in ricarica) e il registro; eseguire l'azione scelta tramite {@link ExecuteTurn} e navigare
  * alla schermata della fase risultante (esplorazione, vittoria o sconfitta).
  * <p>
  * <b>Pattern:</b> MVP (Presenter); le azioni sono Command ({@link NamedAction}) iniettati.
@@ -49,9 +51,12 @@ public class CombatPresenter {
             navigator.showPhase(session.phase());
             return;
         }
-        view.showCombatants(ViewModels.combatantStatus(combat.get().heroCombatant()),
+        Combatant hero = combat.get().heroCombatant();
+        view.showCombatants(ViewModels.combatantStatus(hero),
                 ViewModels.combatantStatus(combat.get().monsterCombatant()));
-        view.showActions(actions.stream().map(NamedAction::name).toList());
+        view.showActions(actions.stream()
+                .map(named -> new ActionOption(named.name(), named.action().isAvailableFor(hero)))
+                .toList());
         view.showLog(log.messages());
     }
 
@@ -64,6 +69,7 @@ public class CombatPresenter {
             executeTurn.execute(session, actions.get(index).action());
         });
         if (done) {
+            sessions.markChanged();
             navigator.showPhase(session.phase());
         }
     }
